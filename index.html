@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mua NOXH — Lao động tự do</title>
+    <style>
+        body {
+            font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 12px;
+            color: #1e293b;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0c1220 0%, #1a2744 40%, #1d4ed8 100%);
+            border-radius: 16px; 
+            padding: 24px 20px; 
+            color: white; 
+            margin-bottom: 20px; 
+            position: relative; 
+            overflow: hidden;
+        }
+        .header-bg-circle {
+            position: absolute; top: -40px; right: -30px; width: 140px; height: 140px; 
+            border-radius: 50%; background: rgba(255,255,255,0.04);
+        }
+        .header-sub {
+            font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px;
+        }
+        .header h1 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.35; }
+        .header-desc { font-size: 12px; opacity: 0.75; margin-top: 6px; }
+        
+        .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+        .badge { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 12px; font-size: 11px; flex: 1 1 120px; }
+        .badge-label { opacity: 0.6; }
+        .badge-value { font-weight: 700; font-size: 13px; }
+        .badge-detail { opacity: 0.5; font-size: 10px; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+        .tab-btn {
+            padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;
+            background: #f1f5f9; color: #64748b; transition: all 0.2s;
+        }
+        .tab-btn.active { background: #1d4ed8; color: white; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Checklist */
+        .progress-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: #64748b; }
+        .progress-header span:last-child { font-weight: 700; }
+        .progress-bar-bg { background: #e2e8f0; border-radius: 99px; height: 7px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.3s, background-color 0.3s; }
+
+        .check-group { margin-bottom: 10px; }
+        .check-group-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; padding: 0 4px; }
+        .check-item {
+            display: flex; gap: 10px; padding: 10px 12px; cursor: pointer;
+            background: white; border: 1px solid #e2e8f0;
+            border-radius: 10px; margin-bottom: 4px; transition: all 0.2s;
+        }
+        .check-item.checked { background: #f0fdf4; border-color: #bbf7d0; }
+        .check-box {
+            width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+            border: 2px solid #cbd5e1; background: white;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .check-item.checked .check-box { border: none; }
+        .check-box span { display: none; color: white; font-size: 12px; font-weight: 700; }
+        .check-item.checked .check-box span { display: block; }
+        .check-name { font-weight: 600; font-size: 13px; color: #1e293b; text-decoration: none; }
+        .check-item.checked .check-name { color: #16a34a; text-decoration: line-through; }
+        .check-note { font-size: 11.5px; color: #64748b; margin-top: 3px; line-height: 1.5; }
+
+        /* Projects */
+        .project-desc { font-size: 13px; color: #64748b; margin-bottom: 12px; line-height: 1.6; }
+        .project-card { border: 1.5px solid; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border-left-width: 4px; border-left-style: solid; }
+        .project-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+        .project-name { font-weight: 700; font-size: 14.5px; color: #0f172a; }
+        .project-distance { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+        .project-loc { font-size: 12px; color: #64748b; margin-top: 4px; }
+        .project-tags { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 12px; }
+        .project-time { font-size: 12px; margin-top: 4px; }
+        .project-hl { margin-top: 8px; font-size: 11.5px; font-weight: 600; padding: 6px 10px; border-radius: 6px; }
+        
+        .project-note { margin-top: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #1e40af; line-height: 1.6; }
+
+        /* Income */
+        .income-alert { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: #991b1b; line-height: 1.6; }
+        .income-step { border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid #f59e0b; }
+        .income-step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .income-step-num { width: 28px; height: 28px; border-radius: 8px; background: #f59e0b; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .income-step-title { font-weight: 700; font-size: 14px; }
+        .income-task { display: flex; gap: 8px; padding: 4px 0; font-size: 12.5px; color: #334155; }
+        .income-task-arrow { color: #f59e0b; font-weight: 700; }
+        .income-success { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #166534; line-height: 1.7; margin-top: 8px; }
+
+        /* Finance */
+        .finance-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #0f172a; }
+        .finance-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .finance-box.blue { background: #eff6ff; border: 1px solid #bfdbfe; }
+        .finance-box-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+        .finance-box.blue .finance-box-title { color: #1e40af; }
+        .finance-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px dashed #e2e8f0; }
+        .finance-box.blue .finance-row { border-bottom: 1px dashed #93c5fd; }
+        .finance-row:last-child { border-bottom: none; }
+        .finance-label { color: #64748b; }
+        .finance-box.blue .finance-label { color: #3b82f6; }
+        .finance-value { font-weight: 600; color: #0f172a; }
+        .finance-box.blue .finance-value { color: #1e3a5f; }
+        .finance-tips { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #92400e; line-height: 1.7; }
+        .finance-tips-title { font-weight: 700; margin-bottom: 4px; }
+
+        .footer { margin-top: 20px; font-size: 10.5px; color: #94a3b8; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-bg-circle"></div>
+        <div class="header-sub">Hướng dẫn cá nhân hóa</div>
+        <h1>Mua NOXH — Lao động tự do</h1>
+        <div class="header-desc">📍 Hộ khẩu: 402 C8 Quỳnh Mai, Hoàng Mai • Độc thân • Thu nhập 12-15tr/tháng</div>
+
+        <div class="badges">
+            <div class="badge">
+                <div class="badge-label">Thu nhập</div>
+                <div class="badge-value">✅ Đạt</div>
+                <div class="badge-detail">12-15tr &lt; 20tr</div>
+            </div>
+            <div class="badge">
+                <div class="badge-label">Cư trú</div>
+                <div class="badge-value">✅ Đạt</div>
+                <div class="badge-detail">Hộ khẩu HN</div>
+            </div>
+            <div class="badge">
+                <div class="badge-label">Hôn nhân</div>
+                <div class="badge-value">📝 Cần xác nhận</div>
+                <div class="badge-detail">Xin GXN độc thân</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs" id="tab-nav">
+        <button class="tab-btn active" data-target="checklist">📋 Checklist</button>
+        <button class="tab-btn" data-target="projects">🏗️ Dự án</button>
+        <button class="tab-btn" data-target="income">💰 Xác nhận TN</button>
+        <button class="tab-btn" data-target="finance">🏦 Tài chính</button>
+    </div>
+
+    <!-- Checklist Tab -->
+    <div class="tab-content active" id="checklist">
+        <div class="progress-box">
+            <div class="progress-header">
+                <span>Tiến độ chuẩn bị</span>
+                <span id="progress-text">0/0 giấy tờ</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-bar" style="width: 0%; background-color: #f59e0b;"></div>
+            </div>
+        </div>
+        <div id="checklist-container"></div>
+    </div>
+
+    <!-- Projects Tab -->
+    <div class="tab-content" id="projects">
+        <div class="project-desc">Các dự án NOXH tại hoặc gần quận Hoàng Mai, dự kiến nhận hồ sơ 2026–2028. Sắp xếp theo khoảng cách từ Quỳnh Mai.</div>
+        <div id="projects-container"></div>
+        <div class="project-note">📌 Theo dõi cập nhật tại: <strong>soxaydung.hanoi.gov.vn</strong> → Mục Nhà ở xã hội</div>
+    </div>
+
+    <!-- Income Tab -->
+    <div class="tab-content" id="income">
+        <div class="income-alert">⚠️ <strong>Lưu ý quan trọng cho lao động tự do:</strong> Vì không có HĐLĐ, bạn KHÔNG xin xác nhận thu nhập tại cơ quan/doanh nghiệp. Thay vào đó, <strong>Công an phường</strong> sẽ là nơi xác nhận, dựa trên dữ liệu dân cư quốc gia.</div>
+        <div id="income-container"></div>
+        <div class="income-success">✅ <strong>Lợi thế của bạn:</strong> Thu nhập 12-15 triệu qua ngân hàng → sao kê rõ ràng, dễ xác minh. Nhiều lao động tự do nhận tiền mặt nên rất khó chứng minh. Bạn có lợi thế lớn ở điểm này!</div>
+    </div>
+
+    <!-- Finance Tab -->
+    <div class="tab-content" id="finance">
+        <div class="finance-title">Ước tính tài chính mua NOXH</div>
+        
+        <div class="finance-box">
+            <div class="finance-box-title">💰 Giá căn hộ NOXH dự kiến tại Hoàng Mai</div>
+            <div class="finance-row"><span class="finance-label">Giá trung bình</span><span class="finance-value">18 – 22 triệu/m²</span></div>
+            <div class="finance-row"><span class="finance-label">Căn nhỏ (~45m²)</span><span class="finance-value">810 triệu – 990 triệu</span></div>
+            <div class="finance-row"><span class="finance-label">Căn trung bình (~55m²)</span><span class="finance-value">990 triệu – 1,2 tỷ</span></div>
+            <div class="finance-row"><span class="finance-label">Căn lớn (~70m²)</span><span class="finance-value">1,26 tỷ – 1,54 tỷ</span></div>
+        </div>
+
+        <div class="finance-box blue">
+            <div class="finance-box-title">🏦 Vay ưu đãi — Ví dụ với căn 55m² (~1 tỷ)</div>
+            <div class="finance-row"><span class="finance-label">Trả trước (~20%)</span><span class="finance-value">~200 triệu</span></div>
+            <div class="finance-row"><span class="finance-label">Số tiền vay</span><span class="finance-value">~800 triệu</span></div>
+            <div class="finance-row"><span class="finance-label">Lãi suất ưu đãi</span><span class="finance-value">~5,4%/năm</span></div>
+            <div class="finance-row"><span class="finance-label">Thời hạn vay tối đa</span><span class="finance-value">25 năm</span></div>
+            <div class="finance-row"><span class="finance-label">Trả góp/tháng (ước tính)</span><span class="finance-value">~5 – 5,5 triệu/tháng</span></div>
+            <div class="finance-row"><span class="finance-label">% thu nhập 12-15tr</span><span class="finance-value">37 – 46% thu nhập</span></div>
+        </div>
+
+        <div class="finance-tips">
+            <div class="finance-tips-title">💡 Gợi ý tài chính:</div>
+            <div>• Bắt đầu tiết kiệm <strong>3-4 triệu/tháng</strong> từ bây giờ → sau 1 năm có ~40-50 triệu, kết hợp tiền tích lũy sẵn để đủ đặt cọc.</div>
+            <div>• Nên chọn <strong>căn nhỏ 45-55m²</strong> để trả góp vừa sức (4-5,5tr/tháng).</div>
+            <div>• Vay tại <strong>NH Chính sách XH</strong> có lãi thấp nhất. Nếu không được, NH thương mại được chỉ định cũng có lãi ưu đãi.</div>
+            <div>• Trả nợ gốc <strong>tối đa 6 tháng/lần</strong> → linh hoạt hơn trả hàng tháng.</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Căn cứ: Luật Nhà ở 2023 · NĐ 100/2024 · NĐ 261/2025 · NĐ 54/2026 · TT 05/2024 · TT 32/2025 · TT 08/2026 • Dữ liệu dự án từ Sở XD Hà Nội & CĐT • Giá và ước tính tài chính chỉ mang tính tham khảo.
+    </div>
+</div>
+
+<script>
+// Data
+const checklistItems = [
+  {
+    group: "Giấy tờ nhân thân",
+    color: "#6366f1",
+    items: [
+      { name: "CCCD (bản sao công chứng hoặc VNeID)", done: false, note: "Kiểm tra thông tin khớp với hộ khẩu" },
+      { name: "Sổ hộ khẩu / Xác nhận thường trú tại Quỳnh Mai, Hoàng Mai", done: false, note: "Bạn có hộ khẩu 402 C8 Quỳnh Mai → đã đủ điều kiện cư trú" },
+      { name: "Giấy xác nhận TÌNH TRẠNG ĐỘC THÂN", done: false, note: "Xin tại UBND phường Quỳnh Mai. Rất quan trọng cho người chưa kết hôn!" },
+    ],
+  },
+  {
+    group: "Đơn đăng ký",
+    color: "#059669",
+    items: [
+      { name: "Đơn đăng ký mua NOXH (Mẫu số 01 - NĐ 261/2025)", done: false, note: "Dùng MẪU MỚI 2026. Tải từ Sở XD hoặc xin tại CĐT." },
+    ],
+  },
+  {
+    group: "Chứng minh ĐỐI TƯỢNG (Lao động tự do)",
+    color: "#dc2626",
+    items: [
+      { name: "Xác nhận đối tượng thu nhập thấp tại đô thị", done: false, note: "Do UBND phường Quỳnh Mai cấp. Bạn thuộc nhóm 5 (Điều 76 Luật Nhà ở 2023) — người thu nhập thấp tại khu vực đô thị, không có HĐLĐ." },
+    ],
+  },
+  {
+    group: "Chứng minh THU NHẬP (Phần khó nhất!)",
+    color: "#f59e0b",
+    items: [
+      { name: "Mẫu số 01 (Thông tư 32/2025) - Đơn xác nhận thu nhập", done: false, note: "Vì không có HĐLĐ → Công an phường Quỳnh Mai sẽ xác nhận dựa trên dữ liệu dân cư. Thời hạn xử lý: 7 ngày." },
+      { name: "Sao kê ngân hàng 12 tháng gần nhất", done: false, note: "LỢI THẾ LỚN: Bạn nhận tiền qua NH → sao kê là bằng chứng mạnh nhất. Thu nhập 12-15tr/tháng < ngưỡng 20tr → ĐỦ ĐIỀU KIỆN." },
+      { name: "Giấy tờ chứng minh nguồn thu nhập (nếu có)", done: false, note: "Hóa đơn, hợp đồng dịch vụ, biên lai... giúp bổ sung minh bạch nguồn thu." },
+    ],
+  },
+  {
+    group: "Chứng minh ĐIỀU KIỆN NHÀ Ở",
+    color: "#7c3aed",
+    items: [
+      { name: "Giấy xác nhận chưa có nhà ở tại Hà Nội (Mẫu 02 - TT 08/2026)", done: false, note: "Xin tại VP Đăng ký đất đai quận Hoàng Mai hoặc UBND phường. Trong 7 ngày sẽ có kết quả." },
+    ],
+  },
+  {
+    group: "Giấy tờ bổ sung (khuyến nghị)",
+    color: "#0891b2",
+    items: [
+      { name: "Bản sao CCCD cho tất cả thành viên hộ gia đình", done: false, note: "Mang theo khi xin xác nhận tại UBND phường — giúp đối chiếu nhanh hơn." },
+      { name: "Photo + công chứng 2-3 bộ hồ sơ", done: false, note: "Phòng trường hợp cần nộp nhiều dự án khác nhau." },
+    ],
+  },
+];
+
+const projects = [
+  { name: "NOXH 321 Vĩnh Hưng", location: "Số 4-6-8 ngõ 321 Vĩnh Hưng, phường Vĩnh Hưng", distance: "~2km từ Quỳnh Mai", status: "Đã khởi công 29/09/2025", units: "577 căn hộ", scale: "01 tòa 31 tầng + 3 tầng hầm", timeline: "Dự kiến nhận hồ sơ: 2026", highlight: "Gần nhất với bạn! NOXH thông minh, chất lượng cao", color: "#059669" },
+  { name: "FS Thịnh Liệt", location: "Phường Thịnh Liệt, Hoàng Mai", distance: "~3km từ Quỳnh Mai", status: "Đã khởi công 12/10/2025", units: "Chưa công bố chi tiết", scale: "Đang xây dựng", timeline: "Dự kiến nhận hồ sơ: 2026", highlight: "Vị trí tốt trong nội thành", color: "#2563eb" },
+  { name: "Hacinco Đại Kim - Nguyễn Xiển", location: "Ô đất CT4, CT5 KĐT Đại Kim, đường Nguyễn Xiển, phường Hoàng Mai", distance: "~3.5km từ Quỳnh Mai", status: "Đã khởi công 2025", units: "Chưa công bố", scale: "CT4 + CT5, KĐT mới Đại Kim", timeline: "Dự kiến nhận hồ sơ: 2026", highlight: "Vị trí đắc địa ngay vành đai 3", color: "#7c3aed" },
+  { name: "Tây Nam Kim Giang", location: "KĐT mới Tây Nam Kim Giang, phường Hoàng Mai", distance: "~4km từ Quỳnh Mai", status: "Đã khởi công 10/10/2025", units: "Chưa công bố", scale: "Ô đất CT6B + CT7 + CT8", timeline: "Dự kiến nhận hồ sơ: 2026", highlight: "Khu đô thị mới, hạ tầng đồng bộ", color: "#f59e0b" },
+  { name: "NOXH X2 Trần Phú", location: "Ô đất X2, phường Hoàng Mai", distance: "~4km từ Quỳnh Mai", status: "Dự kiến nhận hồ sơ 2026", units: "Chưa công bố", scale: "Đang cập nhật", timeline: "Theo dõi Sở XD Hà Nội", highlight: "Trong quận Hoàng Mai", color: "#ec4899" },
+  { name: "NOXH 218 Lĩnh Nam", location: "Ngõ 218 Lĩnh Nam, phường Lĩnh Nam, Hoàng Mai", distance: "~2.5km từ Quỳnh Mai", status: "Đã phê duyệt, chờ triển khai", units: "500 căn hộ", scale: "Tổng đầu tư 823 tỷ", timeline: "Dự kiến hoàn thành: 2028", highlight: "Dự án lớn nhất Hoàng Mai — 500 căn", color: "#0891b2" },
+];
+
+const incomeSteps = [
+  { step: 1, title: "Chuẩn bị trước khi đến Công an phường", tasks: ["In sao kê ngân hàng 12 tháng gần nhất (đóng dấu ngân hàng)", "Mang CCCD gốc", "Mang sổ hộ khẩu gốc hoặc tra VNeID", "Giấy tờ chứng minh công việc tự do (nếu có): hợp đồng dịch vụ, hóa đơn, biên lai..."] },
+  { step: 2, title: "Đến Công an phường Quỳnh Mai", tasks: ["Nộp đơn đề nghị xác nhận điều kiện thu nhập theo Mẫu số 01 (TT 32/2025)", "Ghi rõ: lao động tự do, thu nhập bình quân 12-15 triệu/tháng", "Nộp kèm sao kê ngân hàng làm bằng chứng", "Công an phường sẽ căn cứ dữ liệu dân cư + sao kê để xác nhận"] },
+  { step: 3, title: "Chờ kết quả", tasks: ["Thời hạn xử lý: 7 ngày kể từ ngày nhận đơn", "CA phường có thể phối hợp xác minh thêm nếu cần", "Kết quả: Giấy xác nhận thu nhập ≤ 20 triệu/tháng → ĐỦ ĐIỀU KIỆN", "Giấy xác nhận có hiệu lực 12 tháng (theo NĐ 54/2026)"] },
+  { step: 4, title: "Song song: Xin xác nhận đối tượng tại UBND phường", tasks: ["Đến UBND phường Quỳnh Mai xin xác nhận bạn thuộc nhóm 5 (người thu nhập thấp tại đô thị, không có HĐLĐ)", "Đơn đề nghị xác nhận đồng thời là giấy tờ chứng minh đối tượng (NĐ 54/2026)", "Nên làm ĐỒNG THỜI với bước xin xác nhận thu nhập để tiết kiệm thời gian"] },
+];
+
+let checkedState = {};
+let totalItems = 0;
+
+function renderChecklist() {
+    const container = document.getElementById('checklist-container');
+    container.innerHTML = '';
+    totalItems = 0;
+
+    checklistItems.forEach((group, gIdx) => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'check-group';
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'check-group-title';
+        titleEl.style.color = group.color;
+        titleEl.textContent = group.group;
+        groupEl.appendChild(titleEl);
+
+        group.items.forEach((item, iIdx) => {
+            totalItems++;
+            const key = `${gIdx}-${iIdx}`;
+            
+            const itemEl = document.createElement('div');
+            itemEl.className = `check-item ${checkedState[key] ? 'checked' : ''}`;
+            itemEl.style.borderColor = checkedState[key] ? '#bbf7d0' : '#e2e8f0';
+            
+            const boxEl = document.createElement('div');
+            boxEl.className = 'check-box';
+            if(checkedState[key]) {
+                boxEl.style.backgroundColor = group.color;
+                boxEl.style.borderColor = group.color;
+            }
+            boxEl.innerHTML = '<span>✓</span>';
+            
+            const contentEl = document.createElement('div');
+            contentEl.style.flex = "1";
+            
+            const nameEl = document.createElement('div');
+            nameEl.className = 'check-name';
+            nameEl.textContent = item.name;
+            
+            const noteEl = document.createElement('div');
+            noteEl.className = 'check-note';
+            noteEl.textContent = item.note;
+            
+            contentEl.appendChild(nameEl);
+            contentEl.appendChild(noteEl);
+            
+            itemEl.appendChild(boxEl);
+            itemEl.appendChild(contentEl);
+            
+            itemEl.onclick = () => {
+                checkedState[key] = !checkedState[key];
+                renderChecklist();
+                updateProgress();
+            };
+            
+            groupEl.appendChild(itemEl);
+        });
+        
+        container.appendChild(groupEl);
+    });
+}
+
+function updateProgress() {
+    const checkedCount = Object.values(checkedState).filter(Boolean).length;
+    const pct = totalItems > 0 ? (checkedCount / totalItems) * 100 : 0;
+    
+    document.getElementById('progress-text').textContent = `${checkedCount}/${totalItems} giấy tờ`;
+    
+    const bar = document.getElementById('progress-bar');
+    bar.style.width = `${pct}%`;
+    bar.style.backgroundColor = pct === 100 ? '#22c55e' : '#f59e0b';
+}
+
+function renderProjects() {
+    const container = document.getElementById('projects-container');
+    container.innerHTML = projects.map(p => `
+        <div class="project-card" style="border-color: ${p.color}33; border-left-color: ${p.color};">
+            <div class="project-header">
+                <div class="project-name">${p.name}</div>
+                <span class="project-distance" style="background: ${p.color}15; color: ${p.color}">${p.distance}</span>
+            </div>
+            <div class="project-loc">📍 ${p.location}</div>
+            <div class="project-tags">
+                <span>🔨 ${p.status}</span>
+                <span>🏢 ${p.units}</span>
+            </div>
+            <div class="project-time">⏱ ${p.timeline}</div>
+            <div class="project-hl" style="background: ${p.color}10; color: ${p.color};">💡 ${p.highlight}</div>
+        </div>
+    `).join('');
+}
+
+function renderIncome() {
+    const container = document.getElementById('income-container');
+    container.innerHTML = incomeSteps.map(step => `
+        <div class="income-step">
+            <div class="income-step-header">
+                <span class="income-step-num">${step.step}</span>
+                <span class="income-step-title">${step.title}</span>
+            </div>
+            ${step.tasks.map(task => `
+                <div class="income-task">
+                    <span class="income-task-arrow">→</span>
+                    <span>${task}</span>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+// Tab Switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
+    });
+});
+
+// Render everything on load
+renderChecklist();
+updateProgress();
+renderProjects();
+renderIncome();
+
+</script>
+</body>
+</html>
